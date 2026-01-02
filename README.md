@@ -21,21 +21,60 @@ go get github.com/things-kit/things-kit
 
 ## Quick Start
 
+The `app.New()` function automatically includes configuration (`viperconfig`) and logging modules. Just add your infrastructure and application modules:
+
 ```go
 package main
 
 import (
 	"github.com/things-kit/things-kit/app"
-	"github.com/things-kit/things-kit/logging"
-	"github.com/things-kit/things-kit/viperconfig"
+	httpgin "github.com/things-kit/things-kit-httpgin"
 )
 
 func main() {
 	app.New(
-		viperconfig.Module,
-		logging.Module,
-		// Add your services here
+		httpgin.Module, // Add infrastructure modules
+		// Add your application services here
 	).Run()
+}
+```
+
+### Adding HTTP Handlers
+
+Install the Gin HTTP module:
+```bash
+go get github.com/things-kit/things-kit-httpgin
+```
+
+Then register your handlers:
+```go
+package main
+
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/things-kit/things-kit/app"
+	httpgin "github.com/things-kit/things-kit-httpgin"
+	"go.uber.org/fx"
+)
+
+func main() {
+	app.New(
+		httpgin.Module,
+		httpgin.AsGinHandler(NewGreetingHandler),
+	).Run()
+}
+
+// Handler that implements httpgin.GinHandler interface
+type GreetingHandler struct{}
+
+func NewGreetingHandler() *GreetingHandler {
+	return &GreetingHandler{}
+}
+
+func (h *GreetingHandler) RegisterRoutes(engine *gin.Engine) {
+	engine.GET("/hello", func(c *gin.Context) {
+		c.JSON(200, gin.H{"message": "Hello, World!"})
+	})
 }
 ```
 
