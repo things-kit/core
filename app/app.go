@@ -3,6 +3,8 @@
 package app
 
 import (
+	"github.com/things-kit/core/logging"
+	"github.com/things-kit/core/viperconfig"
 	"go.uber.org/fx"
 )
 
@@ -23,8 +25,14 @@ type Application struct {
 //	    grpcmodule.AsGrpcService(service.NewUserService, pb.RegisterUserServiceServer),
 //	).Run()
 func New(opts ...fx.Option) *Application {
+	// Prepend core framework modules
+	allOpts := append([]fx.Option{
+		viperconfig.Module,
+		logging.Module,
+	}, opts...)
+
 	return &Application{
-		app: fx.New(opts...),
+		app: fx.New(allOpts...),
 	}
 }
 
