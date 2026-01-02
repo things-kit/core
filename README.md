@@ -16,7 +16,7 @@ This core repository provides:
 ## Installation
 
 ```bash
-go get github.com/things-kit/things-kit
+go get github.com/things-kit/core
 ```
 
 ## Quick Start
@@ -27,7 +27,7 @@ The `app.New()` function automatically includes configuration (`viperconfig`) an
 package main
 
 import (
-	"github.com/things-kit/things-kit/app"
+	"github.com/things-kit/core/app"
 	httpgin "github.com/things-kit/things-kit-httpgin"
 )
 
@@ -52,9 +52,8 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/things-kit/things-kit/app"
+	"github.com/things-kit/core/app"
 	httpgin "github.com/things-kit/things-kit-httpgin"
-	"go.uber.org/fx"
 )
 
 func main() {
@@ -89,8 +88,7 @@ The application runner wraps Uber Fx and provides:
 
 ```go
 app.New(
-	viperconfig.Module,
-	logging.Module,
+	// viperconfig and logging are included automatically
 	app.AsStartupFunc(RunMigrations), // Run before startup
 ).Run()
 ```
@@ -110,7 +108,7 @@ type Logger interface {
 	InfoC(ctx context.Context, msg string, fields ...Field)
 	ErrorC(ctx context.Context, msg string, err error, fields ...Field)
 	DebugC(ctx context.Context, msg string, fields ...Field)
-	WarnC(ctx context.Context, msg string, err error, fields ...Field)
+	WarnC(ctx context.Context, msg string, fields ...Field)
 }
 ```
 
